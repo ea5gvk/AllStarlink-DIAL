@@ -1,0 +1,12 @@
+--- rc.local	2015-08-19 14:42:12.945638089 -0400
++++ rc.local	2015-08-19 14:45:45.103498506 -0400
+/* Speed up RPi */
+/* N4IRS 08-19-2015  */
+@@ -11,4 +11,7 @@
+ #
+ # By default this script does nothing.
+ 
++# change governor to performance
++echo performance > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
++
+ exit 0

@@ -1,0 +1,67 @@
+#!/bin/bash
+
+#
+# rc.firstboot
+#
+# The purpose of this script is to ask some key configuration questions,
+# save the configuration, and reboot.
+# 
+#
+if [ -e /firsttime ]
+then
+	echo ""
+	echo "It appears that this is the first time this system"
+	echo "has been booted. It would be prudent to change a few"
+	echo "key settings now for the sake of security and convenience."
+	echo "Once this information is entered, the system will reboot"
+	echo "and the next time the system boots, this message will not"
+	echo "re-appear."
+	echo ""
+	echo -n "Would you like to do this now (Y/N)? "
+	read ANSWER
+	if [ $ANSWER = Y ] || [ $ANSWER = y ]
+	then
+		while ! passwd
+		do
+			echo "ERROR: A valid password must be assigned to continue"	
+		done
+
+		if [ -e /usr/local/sbin/settz ]
+		then
+			echo ""
+			echo "By default, the time zone is set to $(cat /etc/TZ). A correct time"
+			echo "zone entry will allow the system clock to report the correct time."
+
+			/usr/local/sbin/settz
+		fi
+
+		if [ -e /usr/local/sbin/sethost ]
+		then
+			echo ""
+			echo "By default, the host name is set to $(cat /etc/hostname)."
+			echo " The host name should be set to something meaningful"
+			echo "(i.e. the location of this system)"
+
+			/usr/local/sbin/sethost
+		fi
+
+		if [ -e /usr/local/sbin/netsetup ]
+		then
+			echo ""
+			echo "Currently networking is disabled. For the system to be useful,"
+			echo "networking must be configured. You will be able to set up the"
+			echo "system to use either static or DHCP (dynamic) addressing. If you"
+			echo "choose static addressing, you will need to have 5 key IP"
+			echo "addresses handy:  IP ADDRESS, NETMASK, DEFAULT GATEWAY,"
+			echo " PRIMARY DNS, and SECONDARY DNS."
+			
+			/usr/local/sbin/netsetup
+		fi
+
+		rm /firsttime
+		
+		sync
+		sleep 1
+		reboot
+	fi
+fi

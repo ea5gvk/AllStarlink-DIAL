@@ -1,0 +1,315 @@
+# !/bin/bash
+#
+# nodesetup.sh
+#
+DRY_RUN=0
+CONFIGS=/etc/asterisk
+TMP=/tmp
+SENABLE=1
+
+function die {
+	echo "Fatal error: $1"
+	exit 255
+}
+
+function promptnum
+{
+	ANSWER=""
+	while [ -z $ANSWER  ] || [[ ! $ANSWER =~ [0-9]{3,}$ ]]
+	do
+        	echo -n "$1: "
+        	read ANSWER
+	done
+}
+
+function promptcall
+{
+	ANSWER=""
+	while [ -z $ANSWER  ] || [[ ! $ANSWER =~ [\/,0-9,a-z,A-Z]{3,}$ ]]
+	do
+        	echo -n "$1: "
+        	read ANSWER
+	done
+}
+
+
+
+function promptyn
+{
+        echo -n "$1 [y/N]? "
+        read ANSWER
+	if [ ! -z $ANSWER ]
+	then
+       		if [ $ANSWER = Y ] || [ $ANSWER = y ]
+      		then
+                	ANSWER=Y
+        	else
+                	ANSWER=N
+        	fi
+	else
+		ANSWER=N
+	fi
+}
+
+function promptny
+{
+        echo -n "$1 [Y/n]? "
+        read ANSWER
+	if [ ! -z $ANSWER ]
+	then
+       		if [ $ANSWER = N ] || [ $ANSWER = n ]
+      		then
+                	ANSWER=N
+        	else
+                	ANSWER=Y
+        	fi
+	else
+		ANSWER=Y
+	fi
+}
+
+echo "*************************************"
+echo "*     Simple Node Setup Script      *"
+echo "*************************************"
+echo
+echo "The system configuration type is the type of hardware and software"
+echo "running on your system (beagle, simpleusb)"
+echo
+echo "WARNING: Modifying the configuration type on an already set-up system"
+echo "will over-write all existing configuration files!!!"
+echo "If this is an initial installation, you have nothing to worry about."
+echo
+echo "Please make sure you understand these consequences if you"
+echo "choose to change the system configuration type."
+echo
+
+promptyn "Would you like to modify your system configuration type now"
+if [ "$ANSWER" = "Y" ]
+then
+        /usr/local/sbin/modconfig
+fi
+
+promptny "Would you like your config files be provided by the Allstar Portal server"
+if [ "$ANSWER" = "Y" ]
+then
+        echo
+        echo "This requires you to have already applied for and received an approved"
+        echo "Allstar Link Portal user ID, set it up to be a system operator, created"
+        echo "an entry for, and properly configured information about this Server, and"
+        echo "requested, and received an approved Node entry for each of the Nodes on"
+        echo "this Server, and properly configured the inforation for each of the Nodes."
+        echo
+        promptyn "Have you estblished and entered the appropriate information on that server"
+        if [ "$ANSWER" = "Y" ]
+        then
+                if [ -x /usr/bin/curl ] && [ -e /etc/ssl/certs/ca-certificates.crt ]
+                then
+                        TMPF=/tmp/pcf.sh
+                        /bin/rm $TMPF > /dev/null 2>&1
+                        curl -L -s https://allstarlink.org/config/portalconfig.sh -o $TMPF
+                        if [ $? -ne 0 ]
+                        then
+                                echo "curl was not able to download necessary script file, sorry."
+                                exit 1
+                        fi
+                        bash $TMPF
+                        if [ $? -ne 0 ]
+                        then
+                                rm $TMPF
+                                echo "Allstar Link Portal Config Download Failed.. exiting"
+                                exit 1
+                        fi
+                        rm $TMPF
+                        echo
+                        echo "Congradulations! From now on, you will be able to initiate an automatic"
+                        echo "download of any Node or Server configuration changes from the Allstar"
+                        echo "Portal (just from the Web, without even having to have any sort of terminal"
+                        echo "session active to this system)."
+                        echo
+                        echo "You must now manually re-boot the system for these changes to take place."
+                        echo
+                        echo "Thank you for using the Allstar Link Network System!"
+                        echo
+                        exit 0
+                else
+                        echo "curl and its associated cert file(s) can not be found, sorry!"
+                        exit 1
+                fi
+        else
+                echo "Nothing changed!"
+                exit 0
+        fi
+fi
+
+echo
+echo "Doing sanity checks on rpt.conf, extensions.conf, iax.conf, and savenode.conf..."
+
+if [ -e $CONFIGS/extensions.conf ]
+then
+	grep -q -s NODE= $CONFIGS/extensions.conf || die "extensions.conf missing NODE=xxxx"
+	NODE=$(grep NODE= /etc/asterisk/extensions.conf | awk -F'=' '{print $2}')
+else
+	die "$CONFIGS/extensions.conf not found"
+fi
+if [ -e $CONFIGS/rpt.conf ]
+then
+	grep -q -s $NODE $CONFIGS/rpt.conf || die "Node numbers in rpt.conf and extensions.conf are different!"
+else
+	die "$CONFIGS/rpt.conf not found"
+fi
+if [ -e $CONFIGS/iax.conf ]
+then	
+        grep -q -s register\.allstarlink\.org $CONFIGS/iax.conf || die "No allstar link register statement in iax.conf! (old file maybe?)"
+	REG1=$(grep register= $CONFIGS/iax.conf | awk -F'=' '{print $2}')
+	REG=$(echo "$REG1" | awk -F'@' '{print $1}')
+	REGNODE=$(echo "$REG" | awk -F':' '{print $1}')
+	REGPSWD=$(echo "$REG" | awk -F':' '{print $2}')
+	if [ $REGNODE != $NODE ]
+	then
+		die "Node numbers in rpt.conf and iax.conf are different!"
+	fi
+else
+	die "$CONFIGS/iax.conf not found"
+fi
+if [ -e $CONFIGS/savenode.conf ]
+then
+	grep -q -s NODE= $CONFIGS/savenode.conf || die "savenode.conf missing NODE=xxxx"
+	grep -q -s PASSWORD= $CONFIGS/savenode.conf || die "savenode.conf missing PASSWORD=xxxx"
+	grep -q -s ENABLE= $CONFIGS/savenode.conf || die "savenode.conf missing ENABLE=x"
+	SNODE=$(grep NODE= $CONFIGS/savenode.conf | awk -F'=' '{print $2}')
+	SPASSWORD=$(grep PASSWORD= $CONFIGS/savenode.conf | awk -F'=' '{print $2}')
+	SENABLE=$(grep ENABLE= $CONFIGS/savenode.conf | awk -F'=' '{print $2}')
+	if [ $NODE != $SNODE ]
+	then
+		die "Node numbers in iax.conf and savenode.conf are different!"
+	fi
+	if [ $REGPSWD != $SPASSWORD ]
+	then
+		die "Passwords in iax.conf and savenode.conf are different!"
+	fi
+	if [ -z $SENABLE ]
+	then
+		die "Enable not fully specified in savenode.conf!"
+	fi
+fi
+	
+echo "OK, the format of the files is understandable!"
+echo
+
+ANYNEW=0
+NEWNODE=""
+echo The system node number is: $NODE
+promptyn "Would you like to change it?"
+if [ "$ANSWER" = "Y" ]
+then
+	promptnum "Enter the new node number"
+	NEWNODE=$ANSWER
+	ANYNEW=1
+fi
+
+NEWPSWD=""
+echo The registration password is: $REGPSWD
+promptyn "Would you like to change it?"
+if [ "$ANSWER" = "Y" ]
+then
+	promptnum "Enter the new registration password"
+	NEWPSWD=$ANSWER
+	ANYNEW=1
+fi
+
+ID=""
+promptyn "Would you like to enter a callsign for the identifier"
+if [ "$ANSWER" = "Y" ]
+then
+	promptcall "Please enter your callsign"
+	ID=$ANSWER
+	ANYNEW=1
+fi
+
+SAVENODE_ENABLE=1
+if [ $SAVENODE_ENABLE -ne $SENABLE ] 
+then
+	ANYNEW=1
+fi
+
+if  [ $ANYNEW -gt 0 ]
+then
+	echo "Copying original files to temporary work area..."
+	cp $CONFIGS/rpt.conf $TMP/rpt.conf.in || die "Could not copy $CONFIGS/rpt.conf"
+	cp $CONFIGS/extensions.conf $TMP/extensions.conf.in || die "Could not copy $CONFIGS/extensions.conf"
+	cp $CONFIGS/iax.conf $TMP/iax.conf.in || die "Could not copy $CONFIGS/iax.conf"
+	if [ -e $CONFIGS/savenode.conf ]
+	then
+		cp $CONFIGS/savenode.conf $TMP/savenode.in || die "Could not copy $CONFIGS/savenode.conf"
+	fi
+else
+	echo "Nothing to do!"
+	exit 0
+fi
+	
+if [ ! -z $ID ]
+then
+	echo "Updating rpt.conf with new ID..."
+	sed "s~idrecording[ \t]*=[ \t]*|.*~idrecording = |i$ID\t\t\t; Main ID message~" <$TMP/rpt.conf.in >$TMP/rpt.conf.out
+	mv -f $TMP/rpt.conf.out $TMP/rpt.conf.in || die "mv 1 failed"
+	sed "s~idtalkover[ \t]*=[ \t]*|.*~idtalkover = |i$ID\t\t\t; Talkover ID message~" <$TMP/rpt.conf.in >$TMP/rpt.conf.out
+	mv -f $TMP/rpt.conf.out $TMP/rpt.conf.in || die "mv 1 failed"
+fi
+
+if [ ! -z $NEWNODE ]
+then
+	echo "Updating rpt.conf iax.conf, and extensions.conf with new node number..."
+	sed "s/$NODE/$NEWNODE/g" <$TMP/extensions.conf.in >$TMP/extensions.conf.out
+	mv -f $TMP/extensions.conf.out $TMP/extensions.conf.in || die "mv 2 failed"
+
+	sed "s/$NODE/$NEWNODE/g" <$TMP/rpt.conf.in >$TMP/rpt.conf.out
+	mv -f $TMP/rpt.conf.out $TMP/rpt.conf.in || die "mv 3 failed"
+
+	sed "s/$NODE/$NEWNODE/g" <$TMP/iax.conf.in >$TMP/iax.conf.out
+	mv -f $TMP/iax.conf.out $TMP/iax.conf.in || die "mv 4 failed"
+
+	if [ -e $CONFIGS/savenode.conf ]
+	then
+		sed "s/$NODE/$NEWNODE/g" <$TMP/savenode.in >$TMP/savenode.out
+		mv -f $TMP/savenode.out $TMP/savenode.in || die "mv 5 failed"
+	fi
+fi
+
+if [ ! -z $NEWPSWD ]
+then
+	echo "Updating allstar link register statement in iax.conf with new password..."
+	sed "s/$REGPSWD/$NEWPSWD/g" <$TMP/iax.conf.in >$TMP/iax.conf.out
+	mv -f $TMP/iax.conf.out $TMP/iax.conf.in || die "mv 6 failed"
+
+	if  [ -e $CONFIGS/savenode.conf ]
+	then
+		sed "s/$REGPSWD/$NEWPSWD/g" <$TMP/savenode.in >$TMP/savenode.out
+		mv -f $TMP/savenode.out $TMP/savenode.in || die "mv 7 failed"
+	fi
+fi
+
+if  [ -e $CONFIGS/savenode.conf ]
+then
+	sed "s/ENABLE=$SENABLE/ENABLE=$SAVENODE_ENABLE/g" <$TMP/savenode.in >$TMP/savenode.out
+	mv -f $TMP/savenode.out $TMP/savenode.in || die "mv 7 failed"
+fi
+
+if [ $DRY_RUN -eq 0 ]
+then
+	echo "Updating original config files..."
+	mv -f $TMP/rpt.conf.in $CONFIGS/rpt.conf || die "mv 8 failed"
+	mv -f $TMP/extensions.conf.in $CONFIGS/extensions.conf || die "mv 9 failed"
+	mv -f $TMP/iax.conf.in $CONFIGS/iax.conf || die "mv 10 failed"
+	if  [ -e $CONFIGS/savenode.conf ]
+	then
+		mv -f $TMP/savenode.in $CONFIGS/savenode.conf || die "mv 11 failed"
+		chmod +x $CONFIGS/savenode.conf || die "chmod failed!"
+	fi
+	echo "Config files updated. Done!!"
+	echo
+else
+	echo "Dry run"
+	echo
+fi
+exit 0
+ 

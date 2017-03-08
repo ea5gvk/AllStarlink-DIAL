@@ -1,0 +1,24 @@
+--- tools/dahdi.rules	2015-09-15 13:45:35.275978437 -0400
++++ tools/dahdi.rules	2015-09-15 13:46:19.371977838 -0400
+/* Modify udev rules so that user asterisk does not own dahdi */
+/* Surpress the "error" in /var/log/asterisk/messages  */
+/* N4IRS 09-15-2015  */
+@@ -2,7 +2,7 @@
+ ACTION!="add",	GOTO="dahdi_add_end"
+ 
+ # DAHDI devices with ownership/permissions for running as non-root
+-SUBSYSTEM=="dahdi",		OWNER="asterisk", GROUP="asterisk", MODE="0660"
++# SUBSYSTEM=="dahdi",		OWNER="asterisk", GROUP="asterisk", MODE="0660"
+ 
+ # Backward compat names: /dev/dahdi/<channo>
+ SUBSYSTEM=="dahdi_channels",	SYMLINK+="dahdi/%m"
+@@ -11,6 +11,9 @@
+ SUBSYSTEM=="dahdi_channels", ATTRS{hardware_id}!="",	SYMLINK+="dahdi/devices/%s{hardware_id}/%s{local_spanno}/%n"
+ SUBSYSTEM=="dahdi_channels", ATTRS{location}!="",	SYMLINK+="dahdi/devices/@%s{location}/%s{local_spanno}/%n"
+ 
++#  Mask the "error" in /var/log/asterisk/messages
++KERNEL=="dahdi/pseudo", SUBSYSTEM=="dahdi",    SYMLINK+="zap/pseudo", TAG+="systemd"
++
+ LABEL="dahdi_add_end"
+ 
+ # hotplug scripts

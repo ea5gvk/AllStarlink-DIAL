@@ -1,0 +1,45 @@
+apt-get install ezstream lame -y
+
+add this to the bottom of the node stanza in rpt.conf for the node you want to broadcast.
+
+outstreamcmd = /bin/sh,-c,/usr/bin/lame --preset cbr 16 -r -m m -s 8 --bitwidth 16 - - | /usr/bin/ezstream -qvc /etc/ezstream1001.xml
+
+
+
+This is the contents of ezstream1001.xml
+You will need to add / edit your passwords etc.
+
+
+<ezstream>
+
+    <url>http://audio3.broadcastify.com:80/mountpoint-provided-by-broadcastify</url>
+
+    <sourcepassword>feed-specific-password-not-same-as-website-login</sourcepassword>
+
+    <format>MP3</format>
+
+    <filename>stdin</filename>
+
+    <stream_once>1</stream_once>
+
+    <reconnect_tries>0</reconnect_tries>
+
+    <svrinfoname>Description </svrinfoname>
+
+    <svrinfourl>http://www.radioreference.com/</svrinfourl>
+
+    <svrinfogenre>Amateur Radio</svrinfogenre>
+
+    <svrinfodescription>Description</svrinfodescription>
+
+    <svrinfobitrate>16</svrinfobitrate>
+
+    <svrinfochannels>1</svrinfochannels>
+
+    <svrinfosamplerate>22050</svrinfosamplerate>
+
+    <svrinfopublic>1</svrinfopublic>
+
+</ezstream>
+
+From Mark KC7DMF 

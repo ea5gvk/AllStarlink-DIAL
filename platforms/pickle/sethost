@@ -1,0 +1,82 @@
+#/!bin/bash
+
+#
+# Host name  setup script
+# tweaked for Debian
+# N4IRS
+
+# Yes/No function for script interaction
+
+function promptyn ()
+{
+        echo -n "$1 [y/N]? "
+        read ANSWER
+    if [ ! -z $ANSWER ]
+    then
+               if [ $ANSWER = Y ] || [ $ANSWER = y ]
+              then
+                    ANSWER=Y
+            else
+                    ANSWER=N
+            fi
+    else
+        ANSWER=N
+    fi
+}
+
+
+HNPATH=/etc/hostname
+
+echo ""
+echo "***** Host name setup *****"
+echo ""
+HOSTN=$(cat /etc/hostname)
+FQDN=$(hostname -f)
+HOSTNAME=`echo $FQDN |awk -F. '{ print $1 }'`
+# DOM=`echo $FQDN |awk -F. '{$1="";OFS="." ; print $0}' | sed 's/^.//' `
+#Display existing hostname
+echo "Existing hostname is $HOSTN"
+echo "Existing FQDN is $FQDN"
+echo "Existion domain is $DOM"
+
+echo ""
+promptyn "Do you want to change this"
+
+if [ $ANSWER = N ]
+then
+	exit 0
+fi
+
+echo -n "Enter the new host name: "
+read HOSTNAME
+
+if [ -z $HOSTNAME ]
+then
+	echo "Host name not changed"
+	exit 0
+fi
+
+echo -n "Enter the new domain name: "
+read DOMAIN
+
+if [ -z $DOMAIN ]
+then
+        echo "Domain name not changed"
+        exit 0
+fi
+
+echo "New hostname is $HOSTNAME"
+echo "New domain is $DOMAIN"
+
+#change hostname in /etc/hosts & /etc/hostname
+
+exit 0
+
+sed -i "s/$HOSTN/$HOSTNAME/g" /etc/hostname
+sed -i "s/$HOSTN/$HOSTNAME/g" /etc/hosts
+echo $DOM $DOMAIN
+sed -i "s/$DOM/$DOMAIN/g" /etc/hosts
+
+exit 0
+
+

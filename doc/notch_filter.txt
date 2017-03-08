@@ -1,0 +1,27 @@
+Login as root
+stop asterisk
+
+cd /usr/src/astsrc-1.4.23-pre/asterisk/apps
+cp /usr/src/astsrc-1.4.23-pre/extras/notch/rpt_notch.c /usr/src/astsrc-1.4.23-pre/asterisk/apps
+
+edit app_rpt.c
+find:
+/* #include "rpt_notch.c" */
+Change it to:
+#include "rpt_notch.c"
+save and exit
+
+cd /usr/src/astsrc-1.4.23-pre/asterisk
+make
+make install
+
+Add this to /etc/asterisk/rpt.conf in the node stanza
+rxnotch=1065,40           ; (Optional) Notch a particular frequency for a specified
+                                        ; b/w. app_rpt must have been compiled with
+                                        ; the notch option
+
+start asterisk
+
+
+73, Steve N4IRS
+

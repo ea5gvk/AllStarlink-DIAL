@@ -1,0 +1,12 @@
+--- rc.local	2015-10-04 10:32:49.046116298 -0400
++++ rc.local	2015-10-04 13:57:14.172519900 -0400
+/* Run AllStar install on first boot after netinstall */
+/* N4IRS 08-04-2015  */
+@@ -10,5 +10,6 @@
+ # bits.
+ #
+ # By default this script does nothing.
+-
++systemctl stop getty@tty1.service
++(/srv/x86_netinstall_allstar_asterisk_install.sh | tee /dev/tty1) >>/var/log/install.log &
+ exit 0

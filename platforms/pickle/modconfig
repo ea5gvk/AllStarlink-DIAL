@@ -1,0 +1,96 @@
+# !/bin/bash
+#
+# nodesetup.sh
+#
+CONFIGS=/etc/asterisk
+TMP=/tmp
+
+function die {
+	echo "Fatal error: $1"
+	exit 255
+}
+
+function promptnum
+{
+	ANSWER=""
+	while [ -z $ANSWER  ] || [[ ! $ANSWER =~ [0-9]{1,}$ ]]
+	do
+        	echo -n "$1: "
+        	read ANSWER
+	done
+}
+
+CURCFG=
+
+if [ -f /etc/init.d/beagleboard ]
+then
+	CURCFG=beagleboard
+fi
+
+if [ -f /etc/init.d/simpleusb ]
+then
+	CURCFG=simpleusb
+fi
+
+if [ -z $CURCFG ]
+then
+	echo "Unknown current configuration"
+	exit 1
+fi
+
+echo
+echo "Current system configuration: $CURCFG"
+echo
+
+NEWCFG=
+
+while [ -z $NEWCFG ]
+do
+	echo "Please choose one of the following:"
+	echo
+	echo "1) beagleboard (BeagleBoard (LOX) IO card"
+	echo "2) simpleusb (URI or USB fob, without DSP support)"
+	echo "0) I dont want to change my configuration at this time"
+	echo
+	promptnum "Please make your selection now"
+	echo
+	if [ $ANSWER = "0" ]
+	then
+		echo "Configuration not modified"
+		exit
+	fi
+	if [ $ANSWER = "1" ]
+	then
+		NEWCFG=beagleboard
+	fi
+	if [ $ANSWER = "2" ]
+	then
+		NEWCFG=simpleusb
+	fi
+done
+
+if [ $CURCFG = $NEWCFG ]
+then
+	echo "Configuration is already $CURCFG, nothing to do"
+	exit
+fi
+
+echo "Copying configuration files"
+
+/bin/cp /usr/src/astsrc/configs/*.conf /etc/asterisk
+/bin/cp /usr/src/astsrc/configs/$NEWCFG/*.conf /etc/asterisk
+/bin/mv /etc/asterisk/zaptel.conf /etc
+
+/bin/rm -f /etc/init.d/$CURCFG
+/bin/touch /etc/init.d/$NEWCFG
+
+/bin/rm -rf /tmp/configs
+
+sync
+
+echo "done"
+echo
+echo "Configuration changed to $NEWCFG"
+echo
+exit
+

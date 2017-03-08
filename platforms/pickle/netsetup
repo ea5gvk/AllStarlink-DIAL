@@ -1,0 +1,218 @@
+#/!bin/bash
+#####################################################
+#                                                   #
+# Setup network paramaters 			    #
+# Parts borrowed from ACID and Pickle linux         #
+# 9/23/2015 N4IRS                                   #
+#                                                   #
+#####################################################
+#
+# Network interface setup script
+#
+
+# Yes/No function for script interaction
+
+function promptyn ()
+{
+        echo -n "$1 [y/N]? "
+        read ANSWER
+    if [ ! -z $ANSWER ]
+    then
+               if [ $ANSWER = Y ] || [ $ANSWER = y ]
+              then
+                    ANSWER=Y
+            else
+                    ANSWER=N
+            fi
+    else
+        ANSWER=N
+    fi
+}
+
+# http://tinyurl.com/nk5w87n
+# Function calculates number of bit in a netmask
+#
+mask2cidr() {
+    nbits=0
+    IFS=.
+    for dec in $1 ; do
+        case $dec in
+            255) let nbits+=8;;
+            254) let nbits+=7 ; break ;;
+            252) let nbits+=6 ; break ;;
+            248) let nbits+=5 ; break ;;
+            240) let nbits+=4 ; break ;;
+            224) let nbits+=3 ; break ;;
+            192) let nbits+=2 ; break ;;
+            128) let nbits+=1 ; break ;;
+            0);;
+            *) echo "Error: $dec is not recognised"; exit 1
+        esac
+    done
+    echo "$nbits"
+}
+
+INTPATH=/etc/network/interfaces
+IFUPDPATH=/etc/network/if-up.d/touchfile
+RESOLVPATH=/etc/resolv.conf
+
+echo ""
+echo "***** Network interface setup *****"
+echo ""
+promptyn "Do you want to do this now"
+
+if [ $ANSWER = N ]
+then
+	exit 0
+fi
+
+while [ -z $IFMODE ]
+do
+        echo  "Do you want to set up (S)tatic, (D)CHP,"
+        echo -n "or (P)PP for the main network interface? "
+	read IFMODE
+	if [ $IFMODE = S ] || [ $IFMODE = s ]
+	then
+		ANSWER=""
+		while [ -z $ANSWER ]
+		do
+			echo -n "Enter the IP address in the form XXX.XXX.XXX.XXX: "
+			read IPADDR
+			echo -n "Enter the netmask in the form XXX.XXX.XXX.XXX: "
+			read NETMASK
+			echo -n "Enter the default gateway in the form XXX.XXX.XXX.XXX: "
+			read DGW
+			echo -n "Enter the address of the primary nameserver in the form XXX.XXX.XXX.XXX: "
+			read PDNS
+			echo -n "Enter the address of the secondary nameserver in the form XXX.XXX.XXX.XXX: "
+			read SDNS
+			echo ""
+			echo "So we have:"
+			echo ""
+			echo "IP Address       : $IPADDR"
+			echo "Netmask          : $NETMASK"
+			echo "Default Gateway  : $DGW"
+			echo "Primary DNS      : $PDNS"
+			echo "Secondary DNS    : $SDNS"
+			echo ""
+			promptyn "Is this OK"
+			if [ $ANSWER = Y ] 
+			then
+			numbits=$(mask2cidr $NETMASK)
+			# echo "/$numbits"
+
+                                echo ""
+                                echo "Setting network interface to static addressing"
+                                # write systemd style network file
+				echo "[Match]" >/etc/systemd/network/eth0.network
+				echo "Name=eth0" >>/etc/systemd/network/eth0.network
+				echo >>/etc/systemd/network/eth0.network
+				echo "[Network]" >>/etc/systemd/network/eth0.network
+				echo "Address=$IPADDR/$numbits" >>/etc/systemd/network/eth0.network
+                                echo "Gateway=$DGW" >>/etc/systemd/network/eth0.network
+                                echo "" >>/etc/systemd/network/eth0.network
+				echo >>/etc/systemd/network/eth0.network
+				rm -rf /etc/resolv.conf
+                                echo "nameserver $PDNS" >/etc/resolv.conf
+                                echo "nameserver $SDNS" >>/etc/resolv.conf
+
+			# Dnable and stop systemd DHCP
+                        systemctl disable systemd-resolved > /dev/null 2>&1
+                        systemctl stop systemd-resolved > /dev/null 2>&1
+
+			else
+
+				ANSWER=""
+			fi
+		done
+	elif [ $IFMODE = D ] || [ $IFMODE = d ]
+	then
+                                echo ""
+                                echo "Setting network interface to DHCP addressing"
+                                # write systemd style network file
+                                echo "[Match]" >/etc/systemd/network/eth0.network
+                                echo "Name=eth0" >>/etc/systemd/network/eth0.network
+                                echo >>/etc/systemd/network/eth0.network
+                                echo "[Network]" >>/etc/systemd/network/eth0.network
+                                echo "DHCP=v4" >>/etc/systemd/network/eth0.network
+                                echo "" >>/etc/systemd/network/eth0.network
+                                echo >>/etc/systemd/network/eth0.network
+
+                        # enable and start systemd DHCP
+			systemctl enable systemd-resolved > /dev/null 2>&1
+			systemctl start systemd-resolved > /dev/null 2>&1
+			ln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+
+        elif [ $IFMODE = P ] || [ $IFMODE = p ]
+        then
+                ANSWER=""
+                while [ -z $ANSWER ]
+                do
+                        echo -n "Use (S)print or (V)erizon or (A)t&t as the wireless provider? "
+                        read PROVIN
+                        if [ $PROVIN = V ] || [ $PROVIN = v ]
+                        then
+                                PRO=verizon
+                                echo -n "Enter the assigned 10 digit telephone number: "
+                                read TELNO
+                        elif [ $PROVIN = S ] || [ $PROVIN = s ]
+                        then
+                                PRO=sprint
+                        else
+                                PRO=att
+                        fi
+                        echo "Enter the local ethernet IP address in the form XXX.XXX.XXX.XXX "
+                        echo -n "(defaults to 192.168.1.1) :"
+                        read IPADDR
+                        if [ -z $IPADDR ]
+                        then
+                                IPADDR="192.168.1.1"
+                        fi
+                        echo "Enter the local ethernet netmask in the form XXX.XXX.XXX.XXX "
+                        echo -n "(defaults to 255.255.255.0) :"
+                        read NETMASK
+                        if [ -z $NETMASK ]
+                        then
+                                NETMASK="255.255.255.0"
+                        fi
+                        echo ""
+                        echo "So we have:"
+                        echo ""
+                        echo "PPP Provider                     : $PRO"
+                        if [ $PRO = "verizon" ]
+                        then
+                                echo "PPP device telephone number      : $TELNO"
+                        fi
+                        echo "Local (NAT) ethernet IP Address  : $IPADDR"
+                        echo "Local (NAT) ethernet Netmask     : $NETMASK"
+                        echo ""
+                        promptyn "Is this OK"
+                        if [ $ANSWER = Y ]
+                        then
+                                rm -f $IFUPDPATH
+                                echo "#PPP/NAT IP configuration" > $INTPATH
+                                echo "auto lo" >> $INTPATH
+                                echo "auto usb0" >> $INTPATH
+                                echo "auto ppp0" >> $INTPATH
+                                echo "iface lo inet loopback" >> $INTPATH
+                                echo "iface usb0 inet static" >> $INTPATH
+                                echo "address $IPADDR" >> $INTPATH
+                                echo "netmask $NETMASK" >> $INTPATH
+                                echo "iface ppp0 inet ppp" >> $INTPATH
+                                echo "provider $PRO" >> $INTPATH
+                                if [ $PRO = "verizon" ]
+                                then
+                                        cp -f /etc/ppp/peers/verizon.master /etc/ppp/peers/verizon
+                                        echo "user $TELNO@vzw3g.com" >> /etc/ppp/peers/verizon
+                                fi
+                        else
+                                ANSWER=""
+                        fi
+                done
+	else
+		IFMODE=""
+	fi
+done
+
+

@@ -1,0 +1,116 @@
+#!/bin/bash
+
+function promptyn ()
+{
+        echo -n "$1 [y/N]? "
+        read ANSWER
+    if [ ! -z $ANSWER ]
+    then
+               if [ $ANSWER = Y ] || [ $ANSWER = y ]
+              then
+                    ANSWER=Y
+            else
+                    ANSWER=N
+            fi
+    else
+        ANSWER=N
+    fi
+}
+
+
+#
+# rc.firstboot
+#
+# The purpose of this script is to ask some key configuration questions,
+# save the configuration, and reboot.
+#
+#
+if [ -e /etc/asterisk/firsttime ]
+then
+	echo ""
+	echo "Welcome to DIAL - Debian Installation (for) Allstar Link"
+	echo ""
+	echo "It appears that this is the first time you have"
+	echo "logged into this system. It would be prudent to change a few"
+	echo "key settings now for the sake of security and convenience."
+	echo "Once this information is entered, the system will reboot"
+	echo "and the next time the system boots, this message will not"
+	echo "re-appear on login."
+	echo ""
+        echo "you MUST first set the root password"
+        echo ""
+	echo -n "Would you like to do this now (Y/N)? "
+	read ANSWER
+	if [ $ANSWER = Y ] || [ $ANSWER = y ]
+	then
+		while ! passwd
+		do
+			echo "ERROR: A valid password must be assigned to continue"
+		done
+
+
+			echo ""
+			echo "***** Time setup *****"
+                        echo ""
+                        echo "By default, the time zone is set to $(cat /etc/timezone). A correct time"
+                        echo "zone entry will allow the system clock to report the correct time."
+			promptyn "Do you want to do this now"
+				if [ $ANSWER = Y ]
+					then
+					dpkg-reconfigure tzdata
+				fi
+			# dpkg-reconfigure -f noninteractive tzdata
+
+		if [ -e /usr/local/sbin/sethost ]
+		then
+			echo ""
+			echo "By default, the host name is set to $(cat /etc/hostname)."
+			echo " The host name should be set to something meaningful"
+			echo "(i.e. the location of this system)"
+
+			/usr/local/sbin/sethost
+		fi
+
+		if [ -e /usr/local/sbin/netsetup ]
+		then
+			echo ""
+			echo "You can now set up the networking for the system to use"
+			echo "either static or DHCP (dynamic) addressing."
+			echo "If you choose static addressing, you will need to have 5 key IP"
+			echo "addresses handy:  IP ADDRESS, NETMASK, DEFAULT GATEWAY,"
+			echo " PRIMARY DNS, and SECONDARY DNS."
+
+			/usr/local/sbin/netsetup
+		fi
+
+                if [ -e /usr/local/sbin/nodesetup ]
+                then
+			echo ""
+                        echo "You can now configure your node or"
+                        echo "download a configuration from AllStarLink"
+                        echo ""
+
+                        /usr/local/sbin/nodesetup
+                fi
+
+                if [ -e /usr/local/sbin/fs_resize ]
+                then
+			echo ""
+                        echo "You can now resize the root partition"
+                        echo "to fill the available disk space"
+                        echo ""
+
+                        /usr/local/sbin/fs_resize
+                fi
+			echo ""
+                        echo "Setup is complete"
+                        echo -n "Press any key to reboot "
+                        read ANSWER
+
+		rm /etc/asterisk/firsttime
+
+		sync
+		sleep 1
+		reboot
+	fi
+fi

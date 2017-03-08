@@ -1,0 +1,106 @@
+#/!bin/bash
+#
+# Host name  setup script
+# tweaked for Debian
+# N4IRS
+
+# Yes/No function for script interaction
+
+function promptyn ()
+{
+        echo -n "$1 [y/N]? "
+        read ANSWER
+    if [ ! -z $ANSWER ]
+    then
+               if [ $ANSWER = Y ] || [ $ANSWER = y ]
+              then
+                    ANSWER=Y
+            else
+                    ANSWER=N
+            fi
+    else
+        ANSWER=N
+    fi
+}
+
+IP=$(grep Address= /etc/systemd/network/eth0.network | awk -F'=' '{print $2}' | awk -F'/' '{print $1}')
+	if [ -z $IP ]
+  		then IP=DHCP
+	fi
+
+echo ""
+echo "***** Host name setup *****"
+echo ""
+HOSTN=$(cat /etc/hostname)
+FQDN=$(hostname -f)
+DOMN=$(hostname -d)
+HOSTNAME=`echo $FQDN |awk -F. '{ print $1 }'`
+echo "Existing hostname is $HOSTN"
+echo "Existing Domain Name is $DOMN"
+echo "Existing FQDN is $FQDN"
+echo "Address is $IP"
+echo ""
+promptyn "Do you want to change this"
+
+if [ $ANSWER = N ]
+then
+	exit 0
+fi
+
+echo -n "Enter the new host name: "
+read HOSTNAME
+
+if [ -z $HOSTNAME ]
+then
+	echo "Host name not changed"
+	exit 0
+fi
+
+echo -n "Enter the new domain name: "
+read DOMAIN
+
+if [ -z $DOMAIN ]
+then
+        echo "Domain name not changed"
+        exit 0
+fi
+
+echo "Existing hostname is $HOSTN"
+echo "Existing Domain Name is $DOMN"
+echo "Existing FQDN is $FQDN"
+echo
+echo "New hostname is $HOSTNAME"
+echo "New domain is $DOMAIN"
+FQDN="$HOSTNAME.$DOMAIN"
+echo "New FQDN is $FQDN"
+echo "Address is $IP"
+echo
+echo $HOSTNAME >/etc/hostname
+
+	if [ $IP = DHCP ]; then
+		echo setting DHCP
+		# create /etc/hosts for DHCP
+		echo "127.0.0.1		localhost" >/etc/hosts
+		echo "127.0.0.1		$FQDN	$HOSTNAME" >>/etc/hosts
+		echo >>/etc/hosts
+		echo "# The following lines are desirable for IPv6 capable hosts" >>/etc/hosts
+		echo "::1     localhost ip6-localhost ip6-loopback" >>/etc/hosts
+		echo "ff02::1 ip6-allnodes" >>/etc/hosts
+		echo "ff02::2 ip6-allrouters" >>/etc/hosts
+		echo >>/etc/hosts
+
+	else
+
+		echo setting static
+		# create /etc/hosts for static IP
+		echo "127.0.0.1		localhost" >/etc/hosts
+		echo "$IP		$FQDN	$HOSTNAME" >>/etc/hosts
+		echo >>/etc/hosts
+		echo "# The following lines are desirable for IPv6 capable hosts" >>/etc/hosts
+		echo "::1     localhost ip6-localhost ip6-loopback" >>/etc/hosts
+		echo "ff02::1 ip6-allnodes" >>/etc/hosts
+		echo "ff02::2 ip6-allrouters" >>/etc/hosts
+		echo >>/etc/hosts
+
+	fi
+

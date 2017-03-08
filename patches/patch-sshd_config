@@ -1,0 +1,28 @@
+--- sshd_config	2015-09-28 14:52:59.452345261 -0400
++++ sshd_config	2015-10-04 18:30:19.133665221 -0400
+/* patch sshd to not listen ipv6 */
+/* Allow root login via ssh */
+/* listen on port 222 */
+/* N4IRS 10-04-2015  */
+@@ -2,10 +2,10 @@
+ # See the sshd_config(5) manpage for details
+ 
+ # What ports, IPs and protocols we listen for
+-Port 22
++Port 222
+ # Use these options to restrict which interfaces/protocols sshd will bind to
+ #ListenAddress ::
+-#ListenAddress 0.0.0.0
++ListenAddress 0.0.0.0
+ Protocol 2
+ # HostKeys for protocol version 2
+ HostKey /etc/ssh/ssh_host_rsa_key
+@@ -25,7 +25,7 @@
+ 
+ # Authentication:
+ LoginGraceTime 120
+-PermitRootLogin without-password
++PermitRootLogin yes
+ StrictModes yes
+ 
+ RSAAuthentication yes

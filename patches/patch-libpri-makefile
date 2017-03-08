@@ -1,0 +1,13 @@
+--- Makefile	2015-10-04 18:43:42.490657651 -0400
++++ Makefile	2015-10-04 18:44:32.992065142 -0400
+/* Allow libpri to compile */
+/* N4IRS 10-04-2015  */
+@@ -43,7 +43,7 @@
+ DYNAMIC_LIBRARY:=libpri.so.$(SONAME)
+ STATIC_OBJS=copy_string.o pri.o q921.o prisched.o q931.o pri_facility.o version.o
+ DYNAMIC_OBJS=copy_string.lo pri.lo q921.lo prisched.lo q931.lo pri_facility.lo version.lo
+-CFLAGS=-Wall -Werror -Wstrict-prototypes -Wmissing-prototypes -g -fPIC $(ALERTING) $(LIBPRI_COUNTERS)
++CFLAGS=-Wall -Wstrict-prototypes -Wmissing-prototypes -g -fPIC $(ALERTING) $(LIBPRI_COUNTERS)
+ INSTALL_PREFIX=$(DESTDIR)
+ INSTALL_BASE=/usr
+ SOFLAGS:=-Wl,-h$(DYNAMIC_LIBRARY)

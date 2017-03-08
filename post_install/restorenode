@@ -1,0 +1,86 @@
+#! /bin/bash
+SAVESITE=http://backup.allstarlink.org
+
+# Yes/No function for script interaction
+
+function promptyn ()
+{
+        echo -n "$1 [y/N]? "
+        read ANSWER
+    if [ ! -z $ANSWER ]
+    then
+               if [ $ANSWER = Y ] || [ $ANSWER = y ]
+              then
+                    ANSWER=Y
+            else
+                    ANSWER=N
+            fi
+    else
+        ANSWER=N
+    fi
+}
+
+function get_hrefs() {
+    wget -O - --http-user=${NODE} --http-password=${PASSWORD} backup.allstarlink.org |\
+    grep -o '<A .*HREF=.*>' |\
+    sed -e 's/<A /<A /g' |\
+    sed -e 's/<A .*HREF=['"'"'"]//' -e 's/["'"'"'].*$//' -e '/^$/ d'
+}
+
+function strip_getfile() {
+    declare foo=`get_hrefs 2>/dev/null`
+    echo "${foo}" | sed -e 's/getfile.cgi?//g'
+}
+
+function select_backup() {
+    declare foo=`strip_getfile`
+    select FILENAME in $foo;
+    do
+        echo $FILENAME
+        break
+    done
+}
+
+if [ -r /etc/asterisk/savenode.conf ]
+then
+        .  /etc/asterisk/savenode.conf
+else
+        exit 0
+fi
+
+if [ .$ENABLE = "." ]
+then
+        exit 0
+fi
+
+if [ $ENABLE -eq 0 ]
+then
+        exit 0
+fi
+
+echo ""
+echo "Reading Asterisk node $NODE configuration backups from $SAVESITE"
+
+echo ""
+echo Please select the backup file you want to restore:
+echo ""
+backup=`select_backup`
+
+echo ""
+echo "Saving $backup from $SAVESITE to /srv/download/astsave.tgz"
+
+cd /srv/download
+wget -q --timeout=60 --tries=1 --http-user=${NODE} --http-password=${PASSWORD} -O /srv/download/astsave.tgz  http://backup.allstarlink.org/getfile.cgi?$backup
+echo ""
+echo "Ready to restore the node configuration you downloaded"
+echo ""
+promptyn "Do you want to do this now"
+
+if [ $ANSWER = N ]
+then
+        exit 0
+fi
+
+cd /
+tar xzf /srv/download/astsave.tgz
+

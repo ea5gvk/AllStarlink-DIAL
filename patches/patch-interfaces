@@ -1,0 +1,18 @@
+--- interfaces	2015-09-13 21:23:27.808500836 -0400
++++ interfacesr	2015-09-13 21:24:16.325588711 -0400
+/* disable /etc/network/interfaces */
+/* N4IRS 09-13-2014  */
+@@ -4,9 +4,9 @@
+ source /etc/network/interfaces.d/*
+ 
+ # The loopback network interface
+-auto lo
+-iface lo inet loopback
++# auto lo
++# iface lo inet loopback
+ 
+ # The primary network interface
+-allow-hotplug eth0
+-iface eth0 inet dhcp
++# allow-hotplug eth0
++# iface eth0 inet dhcp

@@ -1,0 +1,2 @@
+#! /bin/sh
+ntpd -gq > /dev/null 2>&1 &

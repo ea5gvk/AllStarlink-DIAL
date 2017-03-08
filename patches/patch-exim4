@@ -1,0 +1,13 @@
+--- exim4	2015-09-13 09:42:06.970777765 -0400
++++ exim4	2015-09-13 09:43:12.690504125 -0400
+/* stop exim4 daemon */
+/* N4IRS 09-13-2015  */
+@@ -8,7 +8,7 @@
+ # 'nodaemon' - no daemon is started at all.
+ # 'queueonly' - only a queue running daemon is started, no SMTP listener.
+ # setting this to 'no' will also disable queueruns from /etc/ppp/ip-up.d/exim4
+-QUEUERUNNER='combined'
++QUEUERUNNER='nodaemon'
+ # how often should we run the queue
+ QUEUEINTERVAL='30m'
+ # options common to quez-runner and listening daemon

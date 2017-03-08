@@ -1,0 +1,5 @@
+#!/bin/bash
+KVERS=`uname -r`
+(cd /; tar cvzf root/ast.tar.gz lib/modules/${KVERS}/misc etc/rc.updatenodelist etc/rc.local usr/local/sbin/* \
+root/.bashrc etc/zaptel.conf etc/asterisk usr/src/astsrc usr/src/em-4.0.15-lt usr/lib/libtonezone* usr/lib/libpri* usr/lib/asterisk usr/include/zaptel usr/include/libpri.h \
+usr/bin/emacs root/.emacsrc usr/sbin/asterisk usr/sbin/radio-tune-menu usr/sbin/simpleusb-tune-menu sbin/ztcfg var/lib/asterisk etc/*/*zaptel*  etc/rc*/*asterisk* etc/init*/*asterisk* etc/init.d/beagleboard etc/ppp/peers etc/udhcpd.conf.master etc/network/if-up.d/touchfile)

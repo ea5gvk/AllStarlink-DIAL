@@ -1,0 +1,11 @@
+--- rc.local	2015-07-29 11:40:24.996976969 -0400
++++ rc.local	2015-07-29 11:57:09.812925718 -0400
+/* run firstboot on inital boot after netinstall */
+/* N4IRS 07-29-2015  */
+@@ -10,5 +10,5 @@
+ # bits.
+ #
+ # By default this script does nothing.
+-
++/usr/local/bin/firstboot &
+ exit 0

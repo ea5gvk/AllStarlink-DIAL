@@ -1,0 +1,56 @@
+#! /bin/sh
+
+SYSRESOLV=/etc/resolv.conf
+PPPRESOLV=/etc/ppp/resolv.conf
+
+IFPUB=ppp0
+IFPVT=usb0
+
+rm -f $PPPRESOLV > /dev/null 2>&1
+
+eject > /dev/null 2>&1
+sleep 8
+
+pppd call $1
+if [ $? != 0 ]
+then
+	exit 1
+fi
+
+while true
+do
+	if [ -f $PPPRESOLV ]
+	then
+		# put in new DNS info 
+		cp -f $PPPRESOLV $SYSRESOLV
+		cp -f /etc/udhcpd.conf.master /etc/udhcpd.conf
+		sed < $PPPRESOLV 's/nameserver/option dns/g' >> /etc/udhcpd.conf
+		touch /tmp/udhcpd.leases
+		# set up NAT
+		iptables --flush            # Flush all the rules in filter and nat tables
+		iptables --table nat --flush
+		iptables --delete-chain
+		# Delete all chains that are not in default filter and nat table
+		iptables --table nat --delete-chain
+		# Set up IP FORWARDing and Masquerading
+		iptables --table nat --append POSTROUTING --out-interface $IFPUB -j MASQUERADE
+		iptables --append FORWARD --in-interface $IFPVT -j ACCEPT
+		# Enables packet forwarding by kernel 
+		echo 1 > /proc/sys/net/ipv4/ip_forward
+		echo "Setting up traffic shaping..."
+		tc qdisc add dev ppp0 root handle 1: prio priomap 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 0
+		tc qdisc add dev ppp0 parent 1:1 handle 10: sfq limit 3000
+		tc qdisc add dev ppp0 parent 1:2 handle 20: sfq
+		tc qdisc add dev ppp0 parent 1:3 handle 30: sfq
+		tc filter add dev ppp0 protocol ip parent 1: prio 1 u32 match ip dport 4569 0xffff flowid 1:1
+		tc filter add dev ppp0 protocol ip parent 1: prio 1 u32 match ip sport 4569 0xffff flowid 1:1
+		tc filter add dev ppp0 protocol ip parent 1: prio 1 u32 match ip tos 0x10 0xff flowid 1:2
+		# We are done!!
+		echo "Set up for NAT operation"
+		/usr/sbin/udhcpd
+		touch /var/run/network-up
+		exit 0
+	fi
+	sleep 2
+done
+
