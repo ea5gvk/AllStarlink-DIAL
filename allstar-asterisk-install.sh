@@ -9,10 +9,10 @@ wget --no-check-certificate https://github.com/AllStarLink/DIAL/archive/master.z
 
 # unzip the master
 apt-get install unzip -y
-rm -f AllStar-master
-ln -s /srv AllStar-master
+rm -f DIAL-master
+ln -s /srv DIAL-master
 unzip master.zip
-rm AllStar-master
+rm DIAL-master
 
 # install required
 /srv/scripts/required_libs.sh
