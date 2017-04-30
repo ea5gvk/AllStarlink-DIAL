@@ -39,9 +39,8 @@ then
 	echo ""
         echo "you MUST first set the root password"
         echo ""
-	echo -n "Would you like to do this now (Y/N)? "
-	read ANSWER
-	if [ $ANSWER = Y ] || [ $ANSWER = y ]
+	promptyn "Would you like to do this now"
+	if [ $ANSWER = Y ]
 	then
 		while ! passwd
 		do
