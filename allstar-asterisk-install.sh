@@ -47,8 +47,9 @@ if [[ $codename == 'jessie' ]]; then
   cp /srv/systemd/updatenodelist.service /lib/systemd/system
   systemctl enable updatenodelist.service
   # Start asterisk on boot
-  cp /srv/systemd/asterisk.service /lib/systemd/system
-  systemctl enable asterisk.service
+# No longer needed Makefile updated
+#  cp /srv/systemd/asterisk.service /lib/systemd/system
+#  systemctl enable asterisk.service
 fi
 
 # Move this. OK for now

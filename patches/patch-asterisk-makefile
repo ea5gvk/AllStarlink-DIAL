@@ -1,7 +1,8 @@
---- Makefile	2015-03-18 22:57:24.600066472 -0400
-+++ Makefile	2015-03-18 22:59:58.390492613 -0400
+--- Makefile	2017-05-03 15:10:05.000000000 -0400
++++ Makefile	2017-05-03 15:11:05.000000000 -0400
 /* Get SVN version number and set start stop run levels */
-/* N4IRS 03-18-2015  */
+/* Test for Debian systemd support */
+/* N4IRS 05-03-2017  */
 @@ -258,13 +258,13 @@
  
  ASTERISKVERSION:=$(shell GREP=$(GREP) AWK=$(AWK) build_tools/make_version .)
@@ -23,12 +24,21 @@
  
  ASTCFLAGS+=$(MALLOC_DEBUG)$(BUSYDETECT)$(OPTIONS)
  
-@@ -674,7 +674,7 @@
+@@ -672,9 +672,14 @@
+ 		if [ -f /etc/redhat-release -o -f /etc/fedora-release ]; then \
+ 			$(INSTALL) -m 755 contrib/init.d/rc.redhat.asterisk $(DESTDIR)/etc/rc.d/init.d/asterisk; \
  			if [ -z "$(DESTDIR)" ]; then /sbin/chkconfig --add asterisk; fi; \
- 		elif [ -f /etc/debian_version ]; then \
- 			$(INSTALL) -m 755 contrib/init.d/rc.debian.asterisk $(DESTDIR)/etc/init.d/asterisk; \
+-		elif [ -f /etc/debian_version ]; then \
+-			$(INSTALL) -m 755 contrib/init.d/rc.debian.asterisk $(DESTDIR)/etc/init.d/asterisk; \
 -			if [ -z "$(DESTDIR)" ]; then /usr/sbin/update-rc.d asterisk start 50 2 3 4 5 . stop 91 2 3 4 5 .; fi; \
-+			if [ -z "$(DESTDIR)" ]; then /usr/sbin/update-rc.d asterisk start 50 2 3 4 5 . stop 91 0 1 6 .; fi; \
++		elif [ -f /etc/debian_version ] && [ -f /etc/systemd/system.conf ]; then \
++			$(INSTALL) -m 755 contrib/systemd/asterisk.service $(DESTDIR)/lib/systemd/system/asterisk.service; \
++                        $(INSTALL) -m 755 contrib/systemd/updatenodelist.service $(DESTDIR)/lib/systemd/system/updatenodelist.service; \
++			if [ -z "$(DESTDIR)" ]; then /bin/systemctl enable asterisk.service; fi; \
++                        if [ -z "$(DESTDIR)" ]; then /bin/systemctl enable updatenodelist.service; fi; \
++                elif [ -f /etc/debian_version ] && [ ! -f /etc/systemd/system.conf ]; then \
++                        $(INSTALL) -m 755 contrib/init.d/rc.debian.asterisk $(DESTDIR)/etc/init.d/asterisk; \
++                        if [ -z "$(DESTDIR)" ]; then /usr/sbin/update-rc.d asterisk start 50 2 3 4 5 . stop 91 0 1 6 .; fi; \
  		elif [ -f /etc/gentoo-release ]; then \
  			$(INSTALL) -m 755 contrib/init.d/rc.gentoo.asterisk $(DESTDIR)/etc/init.d/asterisk; \
  			if [ -z "$(DESTDIR)" ]; then /sbin/rc-update add asterisk default; fi; \

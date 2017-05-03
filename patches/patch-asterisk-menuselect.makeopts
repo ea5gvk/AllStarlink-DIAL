@@ -1,11 +1,14 @@
---- menuselect.makeopts	2015-03-13 12:56:26.002417229 -0400
-+++ menuselect.makeopts	2015-03-13 12:57:05.806102109 -0400
-/* Set menuselect options*/
-/* N4IRS 03-13-2015  */
-
-@@ -9,9 +9,9 @@
+--- menuselect.makeopts	2017-05-03 15:10:05.000000000 -0400
++++ menuselect.makeopts	2017-05-03 15:11:05.000000000 -0400
+/* Set menuselect options */
+/* Remove Radio Relax */
+/* N4IRS 05-03-2017 */
+@@ -7,11 +7,11 @@
+ MENUSELECT_PBX=pbx_gtkconsole 
+ MENUSELECT_RES=res_config_odbc res_config_pgsql res_jabber res_odbc res_snmp 
  MENUSELECT_OPTS_app_voicemail=
- MENUSELECT_CFLAGS=RADIO_RELAX LOADABLE_MODULES 
+-MENUSELECT_CFLAGS=RADIO_RELAX LOADABLE_MODULES 
++MENUSELECT_CFLAGS=LOADABLE_MODULES 
  MENUSELECT_EMBED=
 -MENUSELECT_CORE_SOUNDS=CORE-SOUNDS-EN-GSM 
 +MENUSELECT_CORE_SOUNDS=CORE-SOUNDS-EN-ULAW 
