@@ -1,6 +1,6 @@
 #! /bin/sh
 
-wget --no-check-certificate https://github.com/N4IRS/AllStar/raw/master/update -O /var/tmp/update > /dev/null 2>&1
+wget --no-check-certificate https://github.com/AllStarLink/DIAL/raw/master/update -O /var/tmp/update > /dev/null 2>&1
 
 hash1=`md5sum /var/tmp/update | awk '{print $1}'`
 hash2=`md5sum /var/tmp/update.old | awk '{print $1}'`
