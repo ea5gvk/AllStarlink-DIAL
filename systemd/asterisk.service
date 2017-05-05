@@ -7,7 +7,8 @@ After=network.target
 BindsTo=dev-dahdi-pseudo.device
 # Below requires a addition to udev rules
 # See /srv//patches/patch-dahdi.rules
-After=dev-dahdi-pseudo.device
+# After=dev-dahdi-pseudo.device
+After=dahdi.service
 
 
 [Service]
