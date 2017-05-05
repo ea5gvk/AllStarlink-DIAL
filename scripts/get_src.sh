@@ -1,10 +1,10 @@
-#! /bin/sh
+#! /bin/bash
 
-Get Kernel Headers
+# Get Kernel Headers
 distributor=$(lsb_release -is)
-if [[ $distributor == 'Raspbian' ]]; then
+if [[ $distributor = 'Raspbian' ]; then
 apt-get install raspberrypi-kernel-headers -y
-elif [[ $distributor == 'Debian' ]]; then
+elif [[ $distributor = 'Debian' ]; then
 apt-get install linux-headers-`uname -r` -y
 fi
 
@@ -29,7 +29,7 @@ rm -rf libpri
 rm -rf zaptel
 
 # Install DAHDI
-dpkg-i /srv/dkms/dahdi-linux-complete-dkms_2.10.2+2.10.2_all.deb
+dpkg -i /srv/dkms/dahdi-linux-complete-dkms_2.10.2+2.10.2_all.deb
 
 ##########################################################
 
