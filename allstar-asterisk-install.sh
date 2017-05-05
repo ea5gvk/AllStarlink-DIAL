@@ -39,17 +39,17 @@ echo snd_pcm_oss >>/etc/modules
 
 # Put user scripts into /usr/local/sbin
 cp -rf /srv/post_install/* /usr/local/sbin
+cp /usr/src/astsrc-1.4.23-pre/allstar/rc.updatenodelist /usr/local/bin/rc.updatenodelist
 
 codename=$(lsb_release -cs)
 if [[ $codename == 'jessie' ]]; then
-  # start update node list on boot
-  cp /usr/src/astsrc-1.4.23-pre/allstar/rc.updatenodelist /usr/local/bin/rc.updatenodelist
+  # start update node list on boot via systemd
   cp /srv/systemd/updatenodelist.service /lib/systemd/system
   systemctl enable updatenodelist.service
-  # Start asterisk on boot
-# No longer needed Makefile updated
-#  cp /srv/systemd/asterisk.service /lib/systemd/system
-#  systemctl enable asterisk.service
+elif [[ $codename == 'wheezy' ]]; then
+  # start update node list on boot via init.d
+  cp /srv/scripts/updatenodelist /etc/init.d
+  /usr/sbin/update-rc.d updatenodelist start 50 2 3 4 5 . stop 91 2 3 4 5
 fi
 
 # Move this. OK for now
