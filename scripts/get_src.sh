@@ -1,10 +1,12 @@
 #! /bin/bash
 
+if [[ $distributor = "Raspbian" ]]; then
+
 # Get Kernel Headers
 distributor=$(lsb_release -is)
-if [[ $distributor = 'Raspbian' ]; then
+if [[ $distributor = "Raspbian" ]]; then
 apt-get install raspberrypi-kernel-headers -y
-elif [[ $distributor = 'Debian' ]; then
+elif [[ $distributor = "Debian" ]]; then
 apt-get install linux-headers-`uname -r` -y
 fi
 
@@ -27,9 +29,6 @@ git clone https://github.com/AllStarLink/uridiag.git
 cd /usr/src/astsrc-1.4.23-pre
 rm -rf libpri
 rm -rf zaptel
-
-# Install DAHDI
-dpkg -i /srv/dkms/dahdi-linux-complete-dkms_2.10.2+2.10.2_all.deb
 
 ##########################################################
 
