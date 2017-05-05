@@ -23,6 +23,10 @@ echo "1538" >asterisk/.version
 # svn co http://svn.ohnosec.org/svn/projects/allstar/uridiag/trunk uridiag
 git clone https://github.com/AllStarLink/uridiag.git
 
+mkdir -p /usr/src/astsrc-1.4.23-pre/asterisk/contrib/systemd
+cp /srv/systemd/asterisk.service /usr/src/astsrc-1.4.23-pre/asterisk/contrib/systemd
+cp /srv/systemd/updatenodelist.service /usr/src/astsrc-1.4.23-pre/asterisk/contrib/systemd
+
 # Clean out unneeded source
 cd /usr/src/astsrc-1.4.23-pre
 rm -rf libpri
