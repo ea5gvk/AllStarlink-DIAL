@@ -1,7 +1,5 @@
 #! /bin/bash
 
-if [[ $distributor = "Raspbian" ]]; then
-
 # Get Kernel Headers
 distributor=$(lsb_release -is)
 if [[ $distributor = "Raspbian" ]]; then
