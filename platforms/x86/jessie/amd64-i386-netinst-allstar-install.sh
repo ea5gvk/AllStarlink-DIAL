@@ -107,6 +107,9 @@ echo "build Asterisk complete" >>/var/log/install.log
 echo snd_pcm_oss >>/etc/modules
 echo "created /dev/dsp" >>/var/log/install.log
 
+# Add asterisk to logrotate
+/srv/scripts/mk_logrotate_asterisk.sh
+
 # Put user scripts into /usr/local/sbin
 cp -rf /srv/post_install/* /usr/local/sbin
 

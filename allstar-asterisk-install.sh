@@ -37,6 +37,9 @@ rm DIAL-master
 # Though it will not hurt anything.
 echo snd_pcm_oss >>/etc/modules
 
+# Add asterisk to logrotate
+/srv/scripts/mk_logrotate_asterisk.sh
+
 # Put user scripts into /usr/local/sbin
 cp -rf /srv/post_install/* /usr/local/sbin
 cp /usr/src/astsrc-1.4.23-pre/allstar/rc.updatenodelist /usr/local/bin/rc.updatenodelist
