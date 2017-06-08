@@ -140,7 +140,7 @@ echo "Install and enable log2ram" >>/var/log/install.log
 ln -s /usr/local/sbin/flush-log /etc/cron.hourly/flush-log
 
 # Move this. OK for now
-ln -s /usr/local/sbin/check-update.sh /etc/cron.daily/check-update.sh
+ln -s /usr/local/sbin/check-update.sh /etc/cron.daily/check-update
 touch /var/tmp/update.old
 
 touch /etc/asterisk/firsttime
