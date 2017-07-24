@@ -63,10 +63,10 @@ echo "download master.zip" >>/var/log/install.log
 
 # unzip the master
 apt-get install unzip -y
-rm -f AllStar-master
-ln -s /srv AllStar-master
+rm -f DIAL-master
+ln -s /srv DIAL-master
 unzip master.zip
-rm AllStar-master
+rm DIAL-master
 echo "decompress master.zip" >>/var/log/install.log
 
 # put rc.local back to default
