@@ -12,7 +12,7 @@
 wget https://github.com/AllStarLink/DIAL/raw/master/platforms/x86/jessie/amd64-i386-netinst-allstar-install.sh -O /srv/amd64-i386-netinst-allstar-install.sh
 
 # DL firstboot rc.local patch and put in in /tmp
-wget https://github.com/AllStarLink/DIAL/AllStar/raw/master/patches/patch-amd64-i386-first-netinstall-rc.local -O /tmp/patch-amd64-i386-first-netinstall-rc.local
+wget https://github.com/AllStarLink/DIAL/raw/master/patches/patch-amd64-i386-first-netinstall-rc.local -O /tmp/patch-amd64-i386-first-netinstall-rc.local
 
 # make the script executable
 chmod +x /srv/amd64-i386-netinst-allstar-install.sh
