@@ -32,7 +32,7 @@ patch </tmp/patch-sshd_config
 echo "removed sshd ipv6 listener" >>/var/log/install.log
 
 # disable exim4 daemon
-AllStarLink/DIALwget https://github.com/N4IRS/AllStar/raw/master/patches/patch-exim4 -O /tmp/patch-exim4
+AllStarLink/DIALwget https://github.com/AllStarLink/DIAL/raw/master/patches/patch-exim4 -O /tmp/patch-exim4
 cd /etc/default/
 patch </tmp/patch-exim4
 echo "disabled exim4 daemon" >>/var/log/install.log
