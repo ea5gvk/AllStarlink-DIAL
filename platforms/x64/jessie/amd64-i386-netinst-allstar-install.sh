@@ -15,8 +15,11 @@ apt-get purge rpcbind -y
 apt-get autoremove -y
 echo "removed NFS and rpcbind" >>/var/log/install.log
 
-# passwd -d debian
-# echo "Disabled password for user Debian" >>/var/log/install.log
+passwd -l debian
+
+chage -d 0 root
+
+chage -d 0 repeater
 
 # Enable and start systemd networking
 systemctl enable systemd-networkd.service
