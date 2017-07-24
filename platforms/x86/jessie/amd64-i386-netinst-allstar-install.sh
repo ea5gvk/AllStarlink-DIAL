@@ -58,7 +58,7 @@ netstat -tnap >> /var/log/netstat.txt
 echo "start DL of AllStar Asterisk master" >>/var/log/install.log
 
 cd /tmp
-wget --no-check-certificate https://github.com/N4IRS/AllStar/archive/master.zip
+wget --no-check-certificate https://github.com/AllStarLink/DIAL/archive/master.zip
 echo "download master.zip" >>/var/log/install.log
 
 # unzip the master
