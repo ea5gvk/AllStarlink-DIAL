@@ -1,7 +1,7 @@
 --- sshd_config	2015-09-28 14:52:59.452345261 -0400
 +++ sshd_config	2015-10-04 18:30:19.133665221 -0400
 /* patch sshd to not listen ipv6 */
-/* Allow root login via ssh */
+/* not allow root login via ssh */
 /* listen on port 222 */
 /* N4IRS 10-04-2015  */
 @@ -2,10 +2,10 @@
@@ -22,7 +22,7 @@
  # Authentication:
  LoginGraceTime 120
 -PermitRootLogin without-password
-+PermitRootLogin yes
++PermitRootLogin no
  StrictModes yes
  
  RSAAuthentication yes
