@@ -1,4 +1,14 @@
-#! /bin/sh
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+###################################################
+#                                                 #
+#                                                 #
+#                                                 #
+###################################################
+
 SAVESITE=http://backup.allstarlink.org
 
 if [ -r /etc/asterisk/savenode.conf ]
@@ -21,7 +31,7 @@ fi
 echo "Saving Asterisk node configuration to $SAVESITE"
 
 cd /
-tar czf /tmp/astsave.tgz  etc/asterisk 
+tar czf /tmp/astsave.tgz  etc/asterisk
 if [ $? -eq 0 ]
 then
 	wget -q --timeout=60 --tries=1 --post-file=/tmp/astsave.tgz  \

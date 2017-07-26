@@ -1,18 +1,28 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
 
 ##################################
 #                                #
 # Setup to install on first boot #
 #                                #
 ##################################
-# 08/21/2016
-# N4IRS
+
+# https://github.com/AllStarLink/DIAL/raw/Testing/platforms/x64/jessie/amd64-i386-netinst-allstar-install.sh
+# https://github.com/AllStarLink/DIAL/raw/master/platforms/x64/jessie/amd64-i386-netinst-allstar-install.sh
+
+# giturl='github.com/AllStarLink/DIAL/raw/Testing'
+giturl='github.com/AllStarLink/DIAL/raw/master'
 
 # DL firstboot script and put in in /srv
-wget https://github.com/AllStarLink/DIAL/raw/master/platforms/x64/jessie/amd64-i386-netinst-allstar-install.sh -O /srv/amd64-i386-netinst-allstar-install.sh
+wget https://$giturl/platforms/x64/jessie/amd64-i386-netinst-allstar-install.sh -O ./test.sh
+
+# DL firstboot script and put in in /srv
+wget https://$giturl/platforms/x64/jessie/amd64-i386-netinst-allstar-install.sh -O /srv/amd64-i386-netinst-allstar-install.sh
 
 # DL firstboot rc.local patch and put in in /tmp
-wget https://github.com/AllStarLink/DIAL/raw/master/patches/patch-amd64-i386-first-netinstall-rc.local -O /tmp/patch-amd64-i386-first-netinstall-rc.local
+wget https://$giturl/patches/patch-amd64-i386-first-netinstall-rc.local -O /tmp/patch-amd64-i386-first-netinstall-rc.local
 
 # make the script executable
 chmod +x /srv/amd64-i386-netinst-allstar-install.sh
@@ -26,20 +36,20 @@ patch </tmp/patch-amd64-i386-first-netinstall-rc.local
 echo "rc.local modified to run amd64-i386-netinst-allstar-install.sh" >>/var/log/install.log
 
 # stop sshd from listening to ipv6
-wget https://github.com/AllStarLink/DIAL/raw/master/patches/patch-sshd_config -O /tmp/patch-sshd_config
+wget https://$giturl/patches/patch-sshd_config -O /tmp/patch-sshd_config
 cd  /etc/ssh
 patch </tmp/patch-sshd_config
 echo "removed sshd ipv6 listener" >>/var/log/install.log
 
 # disable exim4 daemon
-AllStarLink/DIALwget https://github.com/AllStarLink/DIAL/raw/master/patches/patch-exim4 -O /tmp/patch-exim4
+AllStarLink/DIALwget https://$giturl/patches/patch-exim4 -O /tmp/patch-exim4
 cd /etc/default/
 patch </tmp/patch-exim4
 echo "disabled exim4 daemon" >>/var/log/install.log
 
 # Disable /etc/network/interfaces
 # This could be a simple delete file
-wget https://github.com/AllStarLink/DIAL/raw/master/patches/patch-interfaces -O /tmp/patch-interfaces
+wget https://$giturl/patches/patch-interfaces -O /tmp/patch-interfaces
 cd /etc/network
 patch </tmp/patch-interfaces
 echo "Disabled /etc/network/interfaces" >>/var/log/install.log

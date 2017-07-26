@@ -1,9 +1,23 @@
-# !/bin/bash
-#
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+###################################################
+#                                                 #
+#                                                 #
+#                                                 #
+###################################################
+
 #  Created by Marshall Dias
 #  Modified by Doug, WA3DSP 8/18/2015
 #  Downloaded from http://hamvoip.org/downloads/write_node_callsigns.tar.gz
 #  Modified by Steve N4IRS 4/11/2016
+
+# Proposed changes:
+# Move astdb.txt to /var/lib/asterisk
+# Create a seperate directory for new sound files /var/lib/asterisk/sounds/nodecall
+# Use pointer in /etc/asterisk/rpt.conf to change file type 
 
 # Script to write Calls to /var/lib/asterisk/sounds/rpt/nodenames
 # which will then be used in place of node numbers. This script

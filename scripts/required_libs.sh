@@ -1,4 +1,7 @@
-#! /bin/sh
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
 
 #####################################################
 #                                                   #
@@ -19,7 +22,7 @@ apt-get install libasound2-dev -y
 
 apt-get install libcurl4-gnutls-dev -y
 
-# Used by AllMon2. To be removed
+# Used by astdb.php. Do NOT remove
 apt-get install php5-cli -y
 
 apt-get install libiksemel-dev -y

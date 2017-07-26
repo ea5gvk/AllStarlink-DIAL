@@ -1,4 +1,14 @@
-#! /bin/bash
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+###################################################
+#                                                 #
+#                                                 #
+#                                                 #
+###################################################
+
 
 # Get Kernel Headers
 distributor=$(lsb_release -is)

@@ -1,4 +1,13 @@
-#! /bin/sh
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+###################################################
+#                                                 #
+#                                                 #
+#                                                 #
+###################################################
 
 wget --no-check-certificate https://github.com/AllStarLink/DIAL/raw/master/update -O /var/tmp/update > /dev/null 2>&1
 

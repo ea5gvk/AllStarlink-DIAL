@@ -1,4 +1,14 @@
-#! /bin/bash
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+###################################################
+#                                                 #
+#                                                 #
+#                                                 #
+###################################################
+
 if [ -e /var/run/asterisk.ctl ]
 then
 	echo "Asterisk is currently running!"
@@ -13,4 +23,4 @@ fi
 # asterisk restart service: systemctl restart asterisk.service
 # asterisk stop service: systemctl stop asterisk.service
 # asterisk disable service: systemctl disable asterisk.service
-# asterisk enable service: systemctl enable asterisk.service 
+# asterisk enable service: systemctl enable asterisk.service
