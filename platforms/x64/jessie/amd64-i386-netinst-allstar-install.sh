@@ -133,19 +133,19 @@ elif [[ $codename == 'wheezy' ]]; then
 fi
 
 # Install Log2RAM
-cp /srv/scripts/log2ram /usr/local/bin
-cp /srv/systemd/log2ram.service /lib/systemd/system
-systemctl enable log2ram.service
-echo "Install and enable log2ram" >>/var/log/install.log
-ln -s /usr/local/sbin/flush-log /etc/cron.hourly/flush-log
+# cp /srv/scripts/log2ram /usr/local/bin
+# cp /srv/systemd/log2ram.service /lib/systemd/system
+# systemctl enable log2ram.service
+# echo "Install and enable log2ram" >>/var/log/install.log
+# ln -s /usr/local/sbin/flush-log /etc/cron.hourly/flush-log
 
 # Move this. OK for now
-ln -s /usr/local/sbin/check-update.sh /etc/cron.daily/check-update.sh
-touch /var/tmp/update.old
+# ln -s /usr/local/sbin/check-update.sh /etc/cron.daily/check-update.sh
+# touch /var/tmp/update.old
 
-touch /etc/asterisk/firsttime
+# touch /etc/asterisk/firsttime
 
-echo "test -e /etc/asterisk/firsttime && /usr/local/sbin/firsttime" >>/root/.bashrc
+# echo "test -e /etc/asterisk/firsttime && /usr/local/sbin/firsttime" >>/root/.bashrc
 
 sleep 5
 
