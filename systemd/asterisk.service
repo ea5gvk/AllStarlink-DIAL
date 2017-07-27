@@ -10,7 +10,6 @@ BindsTo=dev-dahdi-pseudo.device
 After=dev-dahdi-pseudo.device
 # After=dahdi.service
 
-
 [Service]
 Type=simple
 StandardOutput=null

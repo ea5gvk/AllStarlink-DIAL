@@ -1,5 +1,14 @@
-# !/bin/bash
-#
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
+
 # nodesetup.sh
 #
 DRY_RUN=0
@@ -18,8 +27,8 @@ function promptnum
 	ANSWER=""
 	while [ -z $ANSWER  ] || [[ ! $ANSWER =~ [0-9]{3,}$ ]]
 	do
-        	echo -n "$1: "
-        	read ANSWER
+		echo -n "$1: "
+		read ANSWER
 	done
 }
 
@@ -28,8 +37,8 @@ function promptcall
 	ANSWER=""
 	while [ -z $ANSWER  ] || [[ ! $ANSWER =~ [\/,0-9,a-z,A-Z]{3,}$ ]]
 	do
-        	echo -n "$1: "
-        	read ANSWER
+		echo -n "$1: "
+		read ANSWER
 	done
 }
 
@@ -41,12 +50,12 @@ function promptyn
         read ANSWER
 	if [ ! -z $ANSWER ]
 	then
-       		if [ $ANSWER = Y ] || [ $ANSWER = y ]
-      		then
-                	ANSWER=Y
-        	else
-                	ANSWER=N
-        	fi
+		if [ $ANSWER = Y ] || [ $ANSWER = y ]
+		then
+			ANSWER=Y
+		else
+			ANSWER=N
+		fi
 	else
 		ANSWER=N
 	fi

@@ -1,11 +1,13 @@
-#! /bin/sh
+#!/usr/bin/env bash
+set -o errexit
 
-###################################
-# Get AllStar master from github  #
-#                                 #
-# More then 1 way to skin a cat   #
-#                                 #
-###################################
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
 
 cd /tmp
 wget --no-check-certificate https://github.com/N4IRS/AllStar/archive/master.zip

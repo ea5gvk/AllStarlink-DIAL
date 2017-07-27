@@ -1,4 +1,7 @@
-#! /bin/sh
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
 
 ##############################################
 #                                            #
@@ -15,6 +18,3 @@ patch </srv/patches/patch-libpri-makefile
 
 make
 make install
-
-
-

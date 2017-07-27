@@ -1,5 +1,14 @@
-# !/bin/bash
-#
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
+
 #  Created by Marshall Dias
 #  Modified by Doug, WA3DSP 8/18/2015
 #  Downloaded from http://hamvoip.org/downloads/write_node_callsigns.tar.gz

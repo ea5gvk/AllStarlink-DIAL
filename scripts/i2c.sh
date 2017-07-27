@@ -1,4 +1,13 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
 
 # Takes one or two arguments. The first is the 2 digit hexadecimal address you are looking for
 # the second is the i2c-dev bus number (defaults to 1).

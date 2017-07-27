@@ -1,5 +1,13 @@
-#!/bin/bash
-# N4IRS 04/04/2017
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
 
 # This script will install AllStarLink Asterisk on a existing Debian installation.
 
