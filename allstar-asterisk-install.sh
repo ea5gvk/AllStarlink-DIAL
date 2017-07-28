@@ -52,6 +52,9 @@ echo snd_pcm_oss >>/etc/modules
 cp -rf /srv/post_install/* /usr/local/sbin
 cp /usr/src/astsrc-1.4.23-pre/allstar/rc.updatenodelist /usr/local/bin/rc.updatenodelist
 
+# Check this out. I think it's done by modified asterisk make file now.
+# Could be redundant.
+
 codename=$(lsb_release -cs)
 if [[ $codename == 'jessie' ]]; then
   # start update node list on boot via systemd
