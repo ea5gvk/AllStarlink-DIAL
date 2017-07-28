@@ -122,6 +122,9 @@ echo "created /dev/dsp" >>/var/log/install.log
 # Put user scripts into /usr/local/sbin
 cp -rf /srv/post_install/* /usr/local/sbin
 
+# Check this out. I think it's done by modified asterisk make file now.
+# Could be redundant.
+
 codename=$(lsb_release -cs)
 if [[ $codename == 'jessie' ]]; then
   echo "codename is Jessie, using systemd units" >>/var/log/install.log
