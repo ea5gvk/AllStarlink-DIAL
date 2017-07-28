@@ -164,7 +164,7 @@ sleep 5
 # ugly!
 mv /var/log/install.log /var/log/install_phase2.log
 
-To be removed
+# To be removed
 
 # Log UDP and TCP listeners during install process
 echo >> /var/log/netstat.txt
