@@ -1,5 +1,13 @@
-#!/bin/bash
-# N4IRS 08/24/2016
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
 
 # This script will run the first time the system boots. Even
 # though we've told it to run after networking is enabled,
