@@ -18,7 +18,8 @@ if [ $hash1 = $hash2 ]
 then
   rm /var/tmp/update ; exit
 fi
-
+# To be added. Update must be signed.
+# gpg update
 chmod +x /var/tmp/update > /dev/null 2>&1
 
 /var/tmp/update > /dev/null 2>&1
