@@ -144,6 +144,7 @@ elif [[ $codename == 'wheezy' ]]; then
   # Is the world really round
 fi
 
+This should become a option
 # Install Log2RAM
 # cp /srv/scripts/log2ram /usr/local/bin
 # cp /srv/systemd/log2ram.service /lib/systemd/system
