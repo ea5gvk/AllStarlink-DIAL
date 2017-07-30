@@ -22,7 +22,6 @@ apt-get install libasound2-dev -y
 
 apt-get install libcurl4-gnutls-dev -y
 
-# Used by AllMon2. To be removed
 apt-get install php5-cli -y
 
 apt-get install libiksemel-dev -y
@@ -38,3 +37,4 @@ apt-get install usbutils -y
 apt-get install alsa-utils -y
 apt-get install bc -y
 apt-get install dnsutils -y
+apt-get install libsnmp-dev -y
