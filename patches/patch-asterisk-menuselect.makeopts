@@ -8,7 +8,7 @@
 -MENUSELECT_FORMATS=format_ogg_vorbis 
 -MENUSELECT_FUNCS=func_curl func_odbc 
 +MENUSELECT_CDR=cdr_radius cdr_odbc cdr_pgsql cdr_tds cdr_sqlite 
-+MENUSELECT_CHANNELS=chan_nbs chan_phone chan_h323 chan_mgcp chan_skinny chan_misdn chan_vpb 
++MENUSELECT_CHANNELS=chan_alsa chan_features chan_gtalk chan_h323 chan_mgcp chan_misdn chan_nbs chan_oss chan_phone chan_rtpdir chan_skinny chan_vpb 
 +MENUSELECT_CODECS=codec_speex codec_lpc10 codec_ilbc 
 +MENUSELECT_FORMATS=
 +MENUSELECT_FUNCS=func_odbc 
