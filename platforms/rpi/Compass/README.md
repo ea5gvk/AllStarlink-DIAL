@@ -1,8 +1,8 @@
-Install on a existing Compass
+Install on a existing Compass Linux
 
 cd /tmp
 
-wget https://github.com/AllStarLink/DIAL/raw/master/platforms/Compass/allstar-asterisk-install.sh
+wget https://github.com/AllStarLink/DIAL/raw/master/platforms/rpi/Compass/allstar-asterisk-install.sh
 
 chmod +x allstar-asterisk-install.sh
 
