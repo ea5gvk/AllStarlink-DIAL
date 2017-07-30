@@ -17,8 +17,9 @@ set -o errexit
 # apt-get install linux-headers-`uname -r` -y
 # fi
 
+cd /usr/src
 wget https://www.niksula.hut.fi/~mhiienka/Rpi/linux-headers-rpi/linux-headers-`uname -r`_`uname -r`-2_armhf.deb
-
+dpkg -i linux-headers-`uname -r`_`uname -r`-2_armhf.deb
 
 ###########################################################
 
