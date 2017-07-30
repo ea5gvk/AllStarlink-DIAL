@@ -22,8 +22,6 @@ ln -s /srv DIAL-master
 unzip master.zip
 rm DIAL-master
 
-exit 0
-
 # install required
 /srv/scripts/required_libs.sh
 
