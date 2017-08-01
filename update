@@ -10,6 +10,6 @@ set -o errexit
 ################################################
 
 echo 'blacklist gma500_gfx' >> /etc/modprobe.d/blacklist.conf
-depmod -ae
+# depmod -ae
 update-initramfs -u 
 
