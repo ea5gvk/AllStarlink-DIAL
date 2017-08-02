@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -o errexit
+
+# N4IRS 07/26/2017
+
+#################################################
+#                                               #
+#                                               #
+#                                               #
+#################################################
+
+cd /etc/apt/sources.list.d
+wget AllStarLink.list
+wget -O - http://dvswitch.org/ASL_Repository/keyFile | sudo apt-key add -
+apt-get update
+
