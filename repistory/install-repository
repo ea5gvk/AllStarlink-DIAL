@@ -10,7 +10,7 @@ set -o errexit
 #################################################
 
 cd /etc/apt/sources.list.d
-wget AllStarLink.list
+wget http://dvswitch.org/ASL_Repository/AllStarLink.list
 wget -O - http://dvswitch.org/ASL_Repository/keyFile | sudo apt-key add -
 apt-get update
 
