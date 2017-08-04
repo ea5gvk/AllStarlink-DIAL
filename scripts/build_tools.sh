@@ -18,6 +18,5 @@ apt-get install git -y
 apt-get install dkms -y
 apt-get install debhelper -y
 
-apt-get install subversion -y
 
 
