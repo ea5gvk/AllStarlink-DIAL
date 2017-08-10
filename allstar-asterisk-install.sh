@@ -11,6 +11,8 @@ set -o errexit
 
 # This script will install AllStarLink Asterisk on a existing Debian installation.
 
+apt-get update
+
 # DL AllStar master
 cd /tmp
 wget --no-check-certificate https://github.com/AllStarLink/DIAL/archive/master.zip
