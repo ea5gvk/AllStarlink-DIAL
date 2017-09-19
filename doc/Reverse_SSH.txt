@@ -1,0 +1,65 @@
+Setup reverse SSH connection to your ASL node:
+
+Add: "GatewayPorts clientspecified" to /etc/ssh/sshd_config on the public host and restart ssh
+
+public host:			A computer on the internet that you and the target machine can connect to via SSH
+target host:			The computer behind a NAT firewall. This is the host you want to connect to. (node)
+public.host.ip.address:		The IP address (usually static) of the host you will use to connect to the target (1.2.3.4)
+public.host.listen.port:	The port number you will use to connect to the target (5678)
+localhost:			127.0.0.1
+local.host.ssh.port:		The port the target host SSH is listening on (222)
+public.host.login.name:		A valid login name on the public host (me)
+public.host.ssh.port:		The port the public host SSH is listening on  (987)
+
+
+ssh -f -N -T -R public.host.ip.address:public.host.listen.port:localhost:local.host.ssh.port public.host.login.name@public.host.ip.address -p public.host.ssh.port
+ssh -f -N -T -R 1.2.3.4:5678:localhost:222 me@1.2.3.4 -p 987
+
+
+ -f      Requests ssh to go to background just before command execution.  This is useful if ssh is going to ask for passwords or passphrases, but the user wants it in the background.  This implies -n.
+             The recommended way to start X11 programs at a remote site is with something like ssh -f host xterm.
+
+             If the ExitOnForwardFailure configuration option is set to “yes”, then a client started with -f will wait for all remote port forwards to be successfully established before placing itself in the
+             background.
+
+ -N      Do not execute a remote command.  This is useful for just forwarding ports (protocol version 2 only).
+
+ -T      Disable pseudo-tty allocation.
+
+ -R [bind_address:]port:host:hostport
+             Specifies that the given port on the remote (server) host is to be forwarded to the given host and port on the local side.  This works by allocating a socket to listen to port on the remote side,
+             and whenever a connection is made to this port, the connection is forwarded over the secure channel, and a connection is made to host port hostport from the local machine.
+
+             Port forwardings can also be specified in the configuration file.  Privileged ports can be forwarded only when logging in as root on the remote machine.  IPv6 addresses can be specified by
+             enclosing the address in square brackets.
+
+             By default, the listening socket on the server will be bound to the loopback interface only.  This may be overridden by specifying a bind_address.  An empty bind_address, or the address ‘*’,
+             indicates that the remote socket should listen on all interfaces.  Specifying a remote bind_address will only succeed if the server's GatewayPorts option is enabled (see sshd_config(5)).
+
+             If the port argument is ‘0’, the listen port will be dynamically allocated on the server and reported to the client at run time.  When used together with -O forward the allocated port will be
+             printed to the standard output.
+
+-p port
+             Port to connect to on the remote host.  This can be specified on a per-host basis in the configuration file.
+
+Execute on the target host:
+ssh -f -N -T -R 1.2.3.4:5678:localhost:222 me@1.2.3.4 -p 987
+
+This will ask you for the password to user "me" on the public host. If you are going to run this at startup or from a script you need a method to automate the login. (no passord) This can be done by using
+a SSH key exchanged between the target host and the public host. See <https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2>
+
+Note:
+If the public host is NOT listening for SSH on port 22, ssh-copy-id will fail because you can not use a non standard port. To get around this, create a config file in .ssh with the following:
+
+host public
+    User me
+    Hostname 1.2.3.4
+    Port 987
+
+You will then be able to execute "ssh-copy-id public" 
+
+
+To connect to the target from home:
+ssh 1.2.3.4 -p 5678
+
+
