@@ -33,6 +33,7 @@ apt-get install usbutils -y
 apt-get install alsa-utils -y
 apt-get install bc -y
 apt-get install dnsutils -y
+apt-get install lsb-release
 
 apt-get install bison -y
 apt-get install curl -y
