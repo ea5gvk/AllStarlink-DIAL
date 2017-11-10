@@ -1,15 +1,24 @@
 Setup dahdi-linux-complete-2.10.2+2.10.2 for dkms install
 unpack source to /usr/src/dahdi-linux-complete-2.10.2+2.10.2
-cp from repository the file dkms.conf
+
 cp from repository the directory dahdi-linux-complete-dkms-mkdeb
 cp from repository dkms-helper to the directory tools/build_tools/dkms-helper
+
+To create a dkms.conf from the installed kernel modules:
+/usr/src/dahdi-linux-complete-2.10.2+2.10.2/tools/build_tools/dkms-helper generate_conf > dkms.conf
+
+or:
+cp from repository the file dkms.conf
+
 dkms add -m dahdi-linux-complete -v 2.10.2+2.10.2
 dkms build -m dahdi-linux-complete -v 2.10.2+2.10.2
 dkms mkdsc -m dahdi-linux-complete -v 2.10.2+2.10.2 --source-only
 dkms mkdeb -m dahdi-linux-complete -v 2.10.2+2.10.2 --source-only
+
 /var/lib/dkms/dahdi-linux-complete/deb contains dahdi-linux-complete-dkms_2.10.2+2.10.2_all.deb <-------------------------------- Needs work
 
 You can install the .deb on the target machine
 dpkg-i dahdi-linux-complete-dkms_2.10.2+2.10.2_all.deb
+apt-get install -f
 
 Steve N4IRS
