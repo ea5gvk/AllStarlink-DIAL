@@ -26,7 +26,8 @@ git clone https://github.com/AllStarLink/Asterisk.git astsrc-1.4.23-pre
 
 # grab the svn version number and put it where asterisk/Makefile expects it.
 cd /usr/src/astsrc-1.4.23-pre
-echo "1538" >asterisk/.version
+# echo "1538" >asterisk/.version
+echo "GIT Version" `git log -1 --format="%h"` >asterisk/.version
 
 # download uridiag
 # svn co http://svn.ohnosec.org/svn/projects/allstar/uridiag/trunk uridiag
