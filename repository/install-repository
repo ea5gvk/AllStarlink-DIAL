@@ -10,11 +10,12 @@ set -o errexit
 #################################################
 
 cd /etc/apt/sources.list.d
-wget http://dvswitch.org/ASL_Repository/AllStarLink.list
-wget -O - http://dvswitch.org/ASL_Repository/keyFile | apt-key add -
+wget http://dvswitch.org/ASL_Repository/allstarlink.list
+wget -O - http://dvswitch.org/ASL_Repository/allstarlink.gpg.key | apt-key add -
 apt-get update
 
 # print the installed repositories
 echo "Installed repositories:"
 apt-cache policy | grep http | awk '{print $2 $3}' | sort -u
+
 
