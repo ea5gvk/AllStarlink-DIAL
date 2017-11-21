@@ -14,3 +14,7 @@ wget http://dvswitch.org/ASL_Repository/AllStarLink.list
 wget -O - http://dvswitch.org/ASL_Repository/keyFile | apt-key add -
 apt-get update
 
+# print the installed repositories
+echo "Installed repositories:"
+apt-cache policy | grep http | awk '{print $2 $3}' | sort -u
+
