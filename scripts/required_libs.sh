@@ -38,4 +38,4 @@ apt-get install lsb-release
 apt-get install bison -y
 apt-get install curl -y
 
-apt-get install php-cli -y
+apt-get install php5-cli -y
