@@ -9,8 +9,9 @@ set -o errexit
 #                                              #
 ################################################
 
-wget -O - http://dvswitch.org/ASL_Repository/keyFile | sudo apt-key add -
-cp /srv/repository/AllStarLink.list /etc/apt/sources.list.d
+cd /etc/apt/sources.list.d
+wget http://dvswitch.org/ASL_Repository/allstarlink.list
+wget -O - http://dvswitch.org/ASL_Repository/allstarlink.gpg.key | apt-key add -
 apt-get update
 
 
