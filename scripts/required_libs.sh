@@ -51,4 +51,5 @@ codename=$(lsb_release -cs)
    apt-get install php5-cli -y
  elif [[ $codename == 'stretch' ]]; then
    echo "codename is Stretch, using php-cli"
+   apt-get install php-cli -y
  fi
