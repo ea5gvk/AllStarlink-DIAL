@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 set -o errexit
 
-# N4IRS 07/26/2017
+# N4IRS 127/18/2017
 
 #####################################################
 #                                                   #
 # Install libs required to install AllStar Asterisk #
 #                                                   #
 #####################################################
+
+# Check for Debian distribution
+# Need to make sure lsb-release is installed forst
+#
+# codename=$(lsb_release -cs)
 
 # depends
 apt-get install libusb-dev -y
@@ -38,4 +43,12 @@ apt-get install lsb-release
 apt-get install bison -y
 apt-get install curl -y
 
-apt-get install php5-cli -y
+# Check for Debian distribution
+# Need to make sure lsb-release is installed forst
+codename=$(lsb_release -cs)
+ if [[ $codename == 'jessie' ]]; then
+   echo "codename is Jessie, using php5-cli"
+   apt-get install php5-cli -y
+ elif [[ $codename == 'stretch' ]]; then
+   echo "codename is Stretch, using php-cli"
+ fi
