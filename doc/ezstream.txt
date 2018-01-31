@@ -4,7 +4,11 @@ add this to the bottom of the node stanza in rpt.conf for the node you want to b
 
 outstreamcmd = /bin/sh,-c,/usr/bin/lame --preset cbr 16 -r -m m -s 8 --bitwidth 16 - - | /usr/bin/ezstream -qvc /etc/ezstream1001.xml
 
-
+-- preset cbr 16    =   use constant bit rate 16
+-r                  =   Assume the input file is raw pcm
+-m m                =   Mode mono
+-s 8                =   sample rate 8
+--bitwidth 16       =   bit width is 16 (default)
 
 This is the contents of ezstream1001.xml
 You will need to add / edit your passwords etc.
