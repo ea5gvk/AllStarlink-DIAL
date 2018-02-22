@@ -1,3 +1,6 @@
+
+# This is only a test. This file will be merged into preseed.cfg
+
 # d-i preseed/late_command string \
 # in-target wget https://github.com/AllStarLink/DIAL/raw/master/platforms/x86/jessie/amd64-i386-netinst-image-prep.sh -O /tmp/amd64-i386-netinst-image-prep.sh ; \
 # in-target /bin/sh /tmp/amd64-i386-netinst-image-prep.sh ; echo "amd64-i386-netinst-image-prep.sh run" >>/var/log/automated_install
